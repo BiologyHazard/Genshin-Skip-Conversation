@@ -3,21 +3,31 @@ import time
 import pyautogui
 import pygetwindow
 from pynput import keyboard
+from winsound import PlaySound
 
 
 MX = 0.7160
 MY = 0.7444
-
-
-def on_press(key):
-    global flag
-    if key == keyboard.KeyCode(char='p'):
-        flag = not flag
-        print(('PAUSED', 'RESUMED')[int(flag)])
+enable_sound_path = r"sound\enable.wav"
+disable_sound_path = r"sound\disable.wav"
 
 
 def main():
-    global flag
+    def on_press(key):
+        nonlocal flag
+        if key == keyboard.KeyCode(char='p'):
+            windows: list[pygetwindow.Window] = pygetwindow.getWindowsWithTitle(
+                '原神')
+            if windows:
+                window = windows[0]
+                if window.isActive:
+                    flag = not flag
+                    if flag:
+                        PlaySound(enable_sound_path, flags=1)
+                        print('Enabled')
+                    else:
+                        PlaySound(disable_sound_path, flags=1)
+                        print('Disabled')
     flag = False
     listener = keyboard.Listener(on_press=on_press)
     listener.start()
@@ -32,7 +42,7 @@ def main():
                     y = round(window.top + MY * window.height)
                     pyautogui.moveTo(x, y)
                     pyautogui.leftClick()
-        time.sleep(0.2)
+        time.sleep(0.1)
 
 
 if __name__ == '__main__':
