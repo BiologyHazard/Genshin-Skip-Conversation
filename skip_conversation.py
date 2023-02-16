@@ -1,4 +1,5 @@
 import time
+from typing import NoReturn
 
 import pyautogui
 import pygetwindow
@@ -6,14 +7,14 @@ from pynput import keyboard
 from winsound import PlaySound
 
 
-MX = 0.7160
-MY = 0.7444
-enable_sound_path = r"sound\enable.wav"
-disable_sound_path = r"sound\disable.wav"
+MX: float = 0.7160
+MY: float = 0.7444
+enable_sound_path: str = r"sound\enable.wav"
+disable_sound_path: str = r"sound\disable.wav"
 
 
-def main():
-    def on_press(key):
+def main() -> NoReturn:
+    def on_press(key) -> None:
         nonlocal flag
         if key == keyboard.KeyCode(char='p'):
             windows: list[pygetwindow.Window] = pygetwindow.getWindowsWithTitle(
@@ -28,7 +29,7 @@ def main():
                     else:
                         PlaySound(disable_sound_path, flags=1)
                         print('Disabled')
-    flag = False
+    flag: bool = False
     listener = keyboard.Listener(on_press=on_press)
     listener.start()
     while True:
@@ -38,8 +39,8 @@ def main():
             if windows:
                 window = windows[0]
                 if window.isActive:
-                    x = round(window.left + MX * window.width)
-                    y = round(window.top + MY * window.height)
+                    x: int = round(window.left + MX * window.width)
+                    y: int = round(window.top + MY * window.height)
                     pyautogui.moveTo(x, y)
                     pyautogui.leftClick()
         time.sleep(0.1)
