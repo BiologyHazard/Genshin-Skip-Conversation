@@ -1,5 +1,6 @@
 import time
 import winsound
+from pathlib import Path
 from typing import NoReturn
 
 import pyautogui
@@ -8,9 +9,9 @@ import pynput
 
 MX: float = 0.7160
 MY: float = 0.7444
-enable_sound_path: str = 'sound/enable.wav'
-disable_sound_path: str = 'sound/disable.wav'
-supported_titles: list[str] = ['原神', '崩坏：星穹铁道']
+enable_sound_path: Path = Path(__file__).parent / 'sound/enable.wav'
+disable_sound_path: Path = Path(__file__).parent / 'sound/disable.wav'
+supported_titles: list[str] = ['原神', '崩坏：星穹铁道', 'Genshin Impact']
 key_code = pynput.keyboard.KeyCode(char='p')
 click_interval: float = 0.1  # 单位秒
 
@@ -24,10 +25,10 @@ def main() -> NoReturn:
             if window.title in supported_titles:
                 on = not on
                 if on:
-                    winsound.PlaySound(enable_sound_path, flags=1)
+                    winsound.PlaySound(str(enable_sound_path), flags=1)
                     print('Enabled')
                 else:
-                    winsound.PlaySound(disable_sound_path, flags=1)
+                    winsound.PlaySound(str(disable_sound_path), flags=1)
                     print('Disabled')
     on: bool = False
     listener = pynput.keyboard.Listener(on_press=on_press)
