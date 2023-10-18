@@ -1,3 +1,4 @@
+import logging
 import time
 import winsound
 from pathlib import Path
@@ -6,6 +7,11 @@ from typing import Never
 import pyautogui
 import pygetwindow
 import pynput
+
+logging.basicConfig(level=logging.DEBUG,
+                    format='{asctime}.{msecs:03.0f} [{levelname}] {module}:{funcName}:{lineno} | {message}',
+                    datefmt='%Y-%m-%d %H:%M:%S',
+                    style='{')
 
 enable_sound_path: Path = Path(__file__).parent / 'sound/enable.wav'
 disable_sound_path: Path = Path(__file__).parent / 'sound/disable.wav'
@@ -35,13 +41,14 @@ def main() -> Never:
                 on = not on
                 if on:
                     winsound.PlaySound(str(enable_sound_path), flags=1)
-                    print('Enabled')
+                    logging.info('Skip Conversation Enabled')
                 else:
                     winsound.PlaySound(str(disable_sound_path), flags=1)
-                    print('Disabled')
+                    logging.info('Skip Conversation Disabled')
         if key == enhance_aritifact_key_code:
             window = pygetwindow.getActiveWindow()
             if window is not None and window.title in enhance_aritifact_supported_titles:
+                logging.info('Enhance Aritifact')
                 for mx, my in enhance_aritifact_clicks:
                     x: int = round(window.left + mx * window.width)
                     y: int = round(window.top + my * window.height)
