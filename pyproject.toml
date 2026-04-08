@@ -1,0 +1,11 @@
+[project]
+name = "genshin-skip-conversation"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "pyautogui>=0.9.54",
+    "pygetwindow>=0.0.9",
+    "pynput>=1.8.1",
+]
