@@ -24,7 +24,7 @@ skip_conversation_click_interval: float = 0.1  # 单位秒
 
 enhance_aritifact_clicks: list[tuple[float, float]] = [
     (241/3268, 433/1892),
-    (2973/3268, 1367/1892),
+    (2973/3268, 1377/1892),
     (2953/3268, 1787/1892),
     (244/3268, 302/1892),
 ]
