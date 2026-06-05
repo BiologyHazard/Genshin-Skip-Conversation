@@ -1,3 +1,0 @@
-pyautogui
-pygetwindow
-pynput
