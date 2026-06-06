@@ -154,6 +154,7 @@ fn mouse_left_click(hwnd: HWND, x: i32, y: i32, mode: Mode) -> Result<(), window
     Ok(())
 }
 
+#[allow(dead_code)]
 enum PlaySoundMode<'a, 'b> {
     File(&'a str),
     Memory(&'b [u8]),
@@ -200,16 +201,16 @@ fn main() {
         if let Err(error) = listen(move |event: Event| {
             if let EventType::KeyPress(Key::KeyP) = event.event_type {
                 let hwnd = get_active_window();
-                if let Some(title) = get_window_title(hwnd) {
-                    if SUPPORTED_TITLES.contains(&title.as_str()) {
-                        let previous = running_clone.fetch_not(Ordering::SeqCst);
-                        if !previous {
-                            println!("Skip Conversation Enabled");
-                            play_sound(PlaySoundMode::Memory(SOUND_ENABLE));
-                        } else {
-                            println!("Skip Conversation Disabled");
-                            play_sound(PlaySoundMode::Memory(SOUND_DISABLE));
-                        }
+                if let Some(title) = get_window_title(hwnd)
+                    && SUPPORTED_TITLES.contains(&title.as_str())
+                {
+                    let previous = running_clone.fetch_not(Ordering::SeqCst);
+                    if !previous {
+                        println!("Skip Conversation Enabled");
+                        play_sound(PlaySoundMode::Memory(SOUND_ENABLE));
+                    } else {
+                        println!("Skip Conversation Disabled");
+                        play_sound(PlaySoundMode::Memory(SOUND_DISABLE));
                     }
                 }
             }
@@ -224,20 +225,19 @@ fn main() {
     loop {
         if running.load(Ordering::SeqCst) {
             let hwnd = get_active_window();
-            if let Some(title) = get_window_title(hwnd) {
-                if SUPPORTED_TITLES.contains(&title.as_str()) {
-                    if let Ok(rect) = get_client_rect(hwnd) {
-                        let actual_resolution = (rect.right - rect.left, rect.bottom - rect.top);
-                        let (x, y) = scale_coordinate(
-                            SKIP_CONVERSATION_CLICKS,
-                            REFERENCE_RESOLUTION,
-                            actual_resolution,
-                        );
+            if let Some(title) = get_window_title(hwnd)
+                && SUPPORTED_TITLES.contains(&title.as_str())
+                && let Ok(rect) = get_client_rect(hwnd)
+            {
+                let actual_resolution = (rect.right - rect.left, rect.bottom - rect.top);
+                let (x, y) = scale_coordinate(
+                    SKIP_CONVERSATION_CLICKS,
+                    REFERENCE_RESOLUTION,
+                    actual_resolution,
+                );
 
-                        mouse_left_click(hwnd, x, y, Mode::SendMessage)
-                            .unwrap_or_else(|e| eprintln!("Failed to click: {:?}", e));
-                    }
-                }
+                mouse_left_click(hwnd, x, y, Mode::SendMessage)
+                    .unwrap_or_else(|e| eprintln!("Failed to click: {:?}", e));
             }
         }
         thread::sleep(CLICK_INTERVAL);
